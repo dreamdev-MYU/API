@@ -1,9 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-
 KOKAND, FERGHANA, ANDIJAN = 'kokand', 'ferghana', 'andijan'
-
 
 class Student(AbstractUser):
 
