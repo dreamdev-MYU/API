@@ -4,6 +4,17 @@ from rest_framework.views import APIView
 from .models import Student
 from rest_framework import generics
 from .serializers import StudentSerializer
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
+
+
+class StudentApiListView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly, )
+
+    def  get(self, request):
+        students = Student.objects.all()
+        serializer = StudentSerializer(students, many=True)
+        return Response(serializer.data)
 
 
 class CreateStudentView(APIView):
