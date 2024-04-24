@@ -5,11 +5,11 @@ from .models import Student
 from rest_framework import generics
 from .serializers import StudentSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-
+from .custom_permissions import IsAdminOrReadOnly
 
 
 class StudentApiListView(APIView):
-    permission_classes = (IsAuthenticatedOrReadOnly, )
+    permission_classes = (IsAdminOrReadOnly, )
 
     def  get(self, request):
         students = Student.objects.all()

@@ -1,33 +1,42 @@
-from django.shortcuts import render
-from django.contrib.auth.models import User
-from rest_framework.views import APIView
 from django.contrib.auth import authenticate
-from .serializers import LoginSerializer
+from django.contrib.auth.models import User
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-
-
+from .serializers import LoginSerializer, RegisterSerializer
 
 class LoginApiView(APIView):
-    def post(self,request):
-        data = request.data
-        serializer = LoginSerializer(data=data)
+    def post(self, request):
+        request_data = request.data
+        serializer = LoginSerializer(data=request_data)
         serializer.is_valid(raise_exception=True)
 
-        user = authenticate(username=serializer.data['username'], password = serializer.data['password'])
+        user = authenticate(**request_data)
 
         if user is None:
-            data = {
-                "status":False,
-                "massage":"User not found"
+            result = {
+                "status": "False",
+                "message": "User not found"
             }
+            return Response(result)
+        else:
+            refresh = RefreshToken.for_user(user)
 
+            data = {
+                "Refresh": str(refresh),
+                "Access": str(refresh.access_token)
+            }
             return Response(data)
-        refresh = RefreshToken.for_user(user)
+
+class RegisterApiView(APIView):
+    def post(self, request):
+        request_data = request.data
+        serializer = RegisterSerializer(data=request_data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
 
         data = {
-            'refresh':str(refresh),
-            'access':str(refresh.access_token),
-            }
-        
+            "status": True,
+            "message": f"{user.username} is Registered"
+        }
         return Response(data)

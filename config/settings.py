@@ -24,7 +24,6 @@ SECRET_KEY = 'django-insecure-gjvy_^c-5uh0gght0-uy@bieg8%^jx3^3wfu0(3uoox3@fscr(
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
@@ -37,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_yasg',
 
     'rest_framework_simplejwt',
 
@@ -156,8 +156,20 @@ CSRF_COOKIE_SAMESITE = None
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        
     ],
+}
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS':{
+        'api_Key':{
+            'type':'apiKey',
+            'in':'header',
+            'name':'Token Authorization'
+        }
+    }
 }
 
 
@@ -190,8 +202,8 @@ SIMPLE_JWT = {
     "JTI_CLAIM": "jti",
 
     "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
-    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
-    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+    "SLIDING_TOKEN_LIFETIME": timedelta(hours=5),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=15),
 
     "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
     "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
